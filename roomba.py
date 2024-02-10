@@ -1,161 +1,134 @@
 import tkinter as tk
 
-class Room:
-    def __init__(self):
-        self.zones = {}
+def calcular_area():
+    # Obtener las medidas de la habitación
+    largo_habitacion = float(entry_largo_habitacion.get())
+    ancho_habitacion = float(entry_ancho_habitacion.get())
+    
+    # Obtener las medidas del objeto
+    largo_objeto = float(entry_largo_objeto.get())
+    ancho_objeto = float(entry_ancho_objeto.get())
+    
+    # Obtener las coordenadas del objeto
+    posicion_x = float(entry_posicion_x.get())
+    posicion_y = float(entry_posicion_y.get())
+    
+    # Calcular áreas
+    area_habitacion = largo_habitacion * ancho_habitacion
+    area_objeto = largo_objeto * ancho_objeto
+    
+    # Calcular área de limpieza de la aspiradora
+    area_limpiar = area_habitacion - area_objeto
+    
+    # Mostrar resultados
+    resultado_area_habitacion.config(text=f"Área de la habitación: {area_habitacion} metros cuadrados")
+    resultado_area_objeto.config(text=f"Área del objeto: {area_objeto} metros cuadrados")
+    resultado_area_limpiar.config(text=f"Área para limpiar: {area_limpiar} metros cuadrados")
+    
+    # Dibujar habitación y objeto en el lienzo
+    lienzo.delete("all")  # Limpiar el lienzo
+    
+    # Escala mayor
+    escala = 20
+    
+    # Dimensiones del lienzo
+    lienzo_width = 400
+    lienzo_height = 300
+    
+    # Coordenadas para centrar el lienzo
+    centro_x = lienzo_width / 2
+    centro_y = lienzo_height / 2
+    
+    # Dibujar habitación
+    x1, y1 = centro_x - largo_habitacion * escala / 2, centro_y - ancho_habitacion * escala / 2
+    x2, y2 = x1 + largo_habitacion * escala, y1 + ancho_habitacion * escala
+    lienzo.create_rectangle(x1, y1, x2, y2, outline="black", fill="white")
+    
+    # Dibujar objeto
+    x1_objeto, y1_objeto = centro_x - largo_habitacion * escala / 2 + posicion_x * escala, centro_y - ancho_habitacion * escala / 2 + posicion_y * escala
+    x2_objeto, y2_objeto = x1_objeto + largo_objeto * escala, y1_objeto + ancho_objeto * escala
+    lienzo.create_rectangle(x1_objeto, y1_objeto, x2_objeto, y2_objeto, outline="red")
 
-    def agregar_zona(self, nombre, largo, ancho, color):
-        self.zones[nombre] = {"largo": largo, "ancho": ancho, "color": color}
+# Crear ventana
+ventana = tk.Tk()
+ventana.title("Calculadora de Área de Limpieza")
 
-    def calcular_superficie_total(self):
-        superficie_total = 31.5  # Área total de la habitación en metros cuadrados
-        for zona, dimensiones in self.zones.items():
-            superficie_total -= dimensiones["largo"] * dimensiones["ancho"]
-        return superficie_total
+# Crear marco para los controles
+marco_controles = tk.Frame(ventana)
+marco_controles.grid(row=0, column=0, padx=10, pady=10)
 
-class VacuumRobot:
-    def __init__(self, room):
-        self.room = room
+# Crear títulos para los campos de entrada
+titulo_habitacion = tk.Label(marco_controles, text="Dimensión Habitación", font=("Helvetica", 14, "bold"))
+titulo_habitacion.grid(row=0, column=0, columnspan=2, pady=(0,5))
 
-    def estimar_tiempo_limpieza(self, velocidad_m2_por_minuto):
-        tiempos_por_zona = {}
-        for zona, dimensiones in self.room.zones.items():
-            area = dimensiones["largo"] * dimensiones["ancho"]
-            tiempo = area / velocidad_m2_por_minuto
-            tiempos_por_zona[zona] = tiempo
-        return tiempos_por_zona
+titulo_largo_habitacion = tk.Label(marco_controles, text="Largo (m):")
+titulo_largo_habitacion.grid(row=1, column=0)
+entry_largo_habitacion = tk.Entry(marco_controles)
+entry_largo_habitacion.grid(row=1, column=1)
+
+titulo_ancho_habitacion = tk.Label(marco_controles, text="Ancho (m):")
+titulo_ancho_habitacion.grid(row=2, column=0)
+entry_ancho_habitacion = tk.Entry(marco_controles)
+entry_ancho_habitacion.grid(row=2, column=1)
+
+titulo_objeto = tk.Label(marco_controles, text="Dimensión Objeto", font=("Helvetica", 14, "bold"))
+titulo_objeto.grid(row=3, column=0, columnspan=2, pady=(10,5))
+
+titulo_largo_objeto = tk.Label(marco_controles, text="Largo (m):")
+titulo_largo_objeto.grid(row=4, column=0)
+entry_largo_objeto = tk.Entry(marco_controles)
+entry_largo_objeto.grid(row=4, column=1)
+
+titulo_ancho_objeto = tk.Label(marco_controles, text="Ancho (m):")
+titulo_ancho_objeto.grid(row=5, column=0)
+entry_ancho_objeto = tk.Entry(marco_controles)
+entry_ancho_objeto.grid(row=5, column=1)
+
+titulo_posicion = tk.Label(marco_controles, text="Posición Objeto", font=("Helvetica", 14, "bold"))
+titulo_posicion.grid(row=6, column=0, columnspan=2, pady=(10,5))
+
+titulo_posicion_x = tk.Label(marco_controles, text="X (m):")
+titulo_posicion_x.grid(row=7, column=0)
+entry_posicion_x = tk.Entry(marco_controles)
+entry_posicion_x.grid(row=7, column=1)
+
+titulo_posicion_y = tk.Label(marco_controles, text="Y (m):")
+titulo_posicion_y.grid(row=8, column=0)
+entry_posicion_y = tk.Entry(marco_controles)
+entry_posicion_y.grid(row=8, column=1)
+
+# Botón para calcular el área
+boton_calcular = tk.Button(marco_controles, text="Calcular Área", command=calcular_area)
+boton_calcular.grid(row=9, column=0, columnspan=2, pady=10)
+
+# Crear marco para mostrar los resultados
+marco_resultados = tk.Frame(ventana)
+marco_resultados.grid(row=0, column=1, padx=10, pady=10)
+
+# Etiquetas para mostrar los resultados
+resultado_area_habitacion = tk.Label(marco_resultados, text="")
+resultado_area_habitacion.grid(row=0, column=0, sticky="w", padx=5, pady=2)
+
+resultado_area_objeto = tk.Label(marco_resultados, text="")
+resultado_area_objeto.grid(row=1, column=0, sticky="w", padx=5, pady=2)
+
+resultado_area_limpiar = tk.Label(marco_resultados, text="")
+resultado_area_limpiar.grid(row=2, column=0, sticky="w", padx=5, pady=2)
+
+# Crear lienzo para visualizar habitación y objeto
+lienzo_frame = tk.Frame(ventana, bg="white", bd=2, relief="groove")
+lienzo_frame.grid(row=0, column=2, padx=10, pady=10)
+
+lienzo = tk.Canvas(lienzo_frame, width=400, height=300, bg="white")
+lienzo.pack()
+
+ventana.mainloop()
 
 
-class VacuumRobotGUI:
-    def __init__(self, master):
-        self.master = master
-        master.title("ASPIRACION ROOMBA")  
-        self.room = Room()
 
-        self.label_bg = "#F0F0F0" 
-        self.entry_bg = "#FFFFFF"  
-        self.button_bg = "#4CAF50"  
-        self.button_fg = "#FFFFFF"  
 
-        self.main_frame = tk.Frame(master)
-        self.main_frame.pack(expand=True, fill=tk.BOTH, padx=20, pady=20)
 
-        self.label_title = tk.Label(self.main_frame, text="ASPIRACION ROOMBA", font=("Arial", 20, "bold"), bg=self.label_bg)
-        self.label_title.pack(pady=(0, 20))
 
-        self.label_zona = tk.Label(self.main_frame, text="Nombre de la zona:", bg=self.label_bg)
-        self.label_zona.pack(anchor="w", padx=10, pady=5)
-        self.entry_zona = tk.Entry(self.main_frame, bg=self.entry_bg, bd=2)  
-        self.entry_zona.pack(fill=tk.X, padx=10, pady=5)
-
-        self.label_largo = tk.Label(self.main_frame, text="Largo (cm):", bg=self.label_bg)
-        self.label_largo.pack(anchor="w", padx=10, pady=5)
-        self.entry_largo = tk.Entry(self.main_frame, bg=self.entry_bg, bd=2)  
-        self.entry_largo.pack(fill=tk.X, padx=10, pady=5)
-
-        self.label_ancho = tk.Label(self.main_frame, text="Ancho (cm):", bg=self.label_bg)
-        self.label_ancho.pack(anchor="w", padx=10, pady=5)
-        self.entry_ancho = tk.Entry(self.main_frame, bg=self.entry_bg, bd=2)  
-        self.entry_ancho.pack(fill=tk.X, padx=10, pady=5)
-
-        self.button_agregar = tk.Button(self.main_frame, text="Agregar Zona", bg=self.button_bg, fg=self.button_fg, command=self.agregar_zona, bd=2)  
-        self.button_agregar.pack(pady=10)
-
-        self.lienzo_frame = tk.Frame(self.main_frame, bg="white", bd=2, relief="groove")  
-        self.lienzo_frame.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
-
-        self.lienzo = tk.Canvas(self.lienzo_frame, bg="white")
-        self.lienzo.pack(expand=True, fill=tk.BOTH)
-
-        self.factor_escala_inicial = 0.5  
-        self.escala = self.factor_escala_inicial
-
-        self.button_listo = tk.Button(self.main_frame, text="Listo", bg=self.button_bg, fg=self.button_fg, command=self.calcular_mueble, bd=2)
-        self.button_listo.pack(pady=10)
-
-    def agregar_zona(self):
-        nombre = self.entry_zona.get()
-        largo = float(self.entry_largo.get().replace(",", ".")) / 100  
-        ancho = float(self.entry_ancho.get().replace(",", ".")) / 100  
-        color = self.obtener_color_zona()
-        self.room.agregar_zona(nombre, largo, ancho, color)
-        self.mostrar_zonas()
-
-    def obtener_color_zona(self):
-        colores = ["#ADD8E6", "#FFA07A", "#FFC0CB", "#FFFF99", "#B0E0E6"]
-        indice_color = len(self.room.zones) % len(colores)
-        return colores[indice_color]
-
-    def mostrar_zonas(self):
-        self.lienzo.delete("all")
-
-        lienzo_width = self.lienzo_frame.winfo_width()  
-        lienzo_height = self.lienzo_frame.winfo_height() 
-
-        max_ancho = max(self.room.zones.values(), key=lambda x: x["ancho"])["ancho"]
-        max_largo = max(self.room.zones.values(), key=lambda x: x["largo"])["largo"]
-
-        x_offset = 20
-        y_offset = 20
-        row_height = 0
-
-        for nombre, dimensiones in self.room.zones.items():
-            factor_escala_x = lienzo_width / max_largo
-            factor_escala_y = lienzo_height / max_ancho
-            factor_escala = min(factor_escala_x, factor_escala_y) * self.escala
-
-            x1 = x_offset
-            y1 = y_offset
-            x2 = x1 + dimensiones["largo"] * factor_escala
-            y2 = y1 + dimensiones["ancho"] * factor_escala
-
-            if x2 > lienzo_width:  
-                x_offset = 20
-                y_offset += row_height + 20 
-                row_height = 0
-
-                x1 = x_offset
-                y1 = y_offset
-                x2 = x1 + dimensiones["largo"] * factor_escala
-                y2 = y1 + dimensiones["ancho"] * factor_escala
-
-            color = dimensiones["color"]
-
-            area = dimensiones["largo"] * dimensiones["ancho"]
-            tiempo = VacuumRobot(self.room).estimar_tiempo_limpieza(1)  
-
-            self.lienzo.create_rectangle(x1, y1, x2, y2, fill=color)
-            area_text = f"{nombre}\nÁrea: {area:.2f} m²\nTiempo: {tiempo[nombre]:.2f} minutos"  
-            self.lienzo.create_text((x1 + x2) / 2, (y1 + y2) / 2, text=area_text, font=("Arial", 8, "bold"), justify="center")
-
-            x_offset = x2 + 20  
-            row_height = max(row_height, y2 - y1)  
-
-    def calcular_mueble(self):
-        # Calcular y mostrar el área restante (mueble)
-        area_restante = self.room.calcular_superficie_total()
-        if area_restante > 0:
-            lienzo_width = self.lienzo_frame.winfo_width()
-            lienzo_height = self.lienzo_frame.winfo_height()
-
-            x1 = lienzo_width * 0.7
-            y1 = lienzo_height * 0.7
-            x2 = lienzo_width * 0.9
-            y2 = lienzo_height * 0.9
-
-            self.lienzo.create_rectangle(x1, y1, x2, y2, fill="gray")
-            mueble_text = f"Mueble\nÁrea: {area_restante:.2f} m²"
-            self.lienzo.create_text((x1 + x2) / 2, (y1 + y2) / 2, text=mueble_text, font=("Arial", 8, "bold"), justify="center")
-
-            self.lienzo.config(scrollregion=self.lienzo.bbox("all"))
-
-def main():
-    root = tk.Tk()
-    app = VacuumRobotGUI(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
 
 
 

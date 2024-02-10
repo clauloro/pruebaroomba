@@ -1,83 +1,129 @@
 import tkinter as tk
 
+def calcular_area():
+    # Obtener las medidas de la habitación
+    largo_habitacion = float(entry_largo_habitacion.get())
+    ancho_habitacion = float(entry_ancho_habitacion.get())
+    
+    # Obtener las medidas del objeto
+    largo_objeto = float(entry_largo_objeto.get())
+    ancho_objeto = float(entry_ancho_objeto.get())
+    
+    # Obtener las coordenadas del objeto
+    posicion_x = float(entry_posicion_x.get())
+    posicion_y = float(entry_posicion_y.get())
+    
+    # Calcular áreas
+    area_habitacion = largo_habitacion * ancho_habitacion
+    area_objeto = largo_objeto * ancho_objeto
+    
+    # Calcular área de limpieza de la aspiradora
+    area_limpiar = area_habitacion - area_objeto
+    
+    # Mostrar resultados
+    resultado_area_habitacion.config(text=f"Área de la habitación: {area_habitacion} metros cuadrados")
+    resultado_area_objeto.config(text=f"Área del objeto: {area_objeto} metros cuadrados")
+    resultado_area_limpiar.config(text=f"Área para limpiar: {area_limpiar} metros cuadrados")
+    
+    # Dibujar habitación y objeto en el lienzo
+    lienzo.delete("all")  # Limpiar el lienzo
+    
+    # Escala mayor
+    escala = 20
+    
+    # Dimensiones del lienzo
+    lienzo_width = 400
+    lienzo_height = 300
+    
+    # Coordenadas para centrar el lienzo
+    centro_x = lienzo_width / 2
+    centro_y = lienzo_height / 2
+    
+    # Dibujar habitación
+    x1, y1 = centro_x - largo_habitacion * escala / 2, centro_y - ancho_habitacion * escala / 2
+    x2, y2 = x1 + largo_habitacion * escala, y1 + ancho_habitacion * escala
+    lienzo.create_rectangle(x1, y1, x2, y2, outline="black", fill="white")
+    
+    # Dibujar objeto
+    x1_objeto, y1_objeto = centro_x - largo_habitacion * escala / 2 + posicion_x * escala, centro_y - ancho_habitacion * escala / 2 + posicion_y * escala
+    x2_objeto, y2_objeto = x1_objeto + largo_objeto * escala, y1_objeto + ancho_objeto * escala
+    lienzo.create_rectangle(x1_objeto, y1_objeto, x2_objeto, y2_objeto, outline="red")
 
-class Interfaz(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("Calculadora de Área Limpiable")
-        
-        self.label_habitacion = tk.Label(self, text="Dimensiones de la habitación:")
-        self.label_habitacion.grid(row=0, column=0, columnspan=2, padx=10, pady=5, sticky=tk.W)
+# Crear ventana
+ventana = tk.Tk()
+ventana.title("Calculadora de Área de Limpieza")
 
-        self.label_longitud = tk.Label(self, text="Longitud (metros):")
-        self.label_longitud.grid(row=1, column=0, padx=10, pady=5, sticky=tk.W)
-        self.entry_longitud = tk.Entry(self)
-        self.entry_longitud.grid(row=1, column=1, padx=10, pady=5)
+# Crear marco para los controles
+marco_controles = tk.Frame(ventana)
+marco_controles.grid(row=0, column=0, padx=10, pady=10)
 
-        self.label_ancho = tk.Label(self, text="Ancho (metros):")
-        self.label_ancho.grid(row=2, column=0, padx=10, pady=5, sticky=tk.W)
-        self.entry_ancho = tk.Entry(self)
-        self.entry_ancho.grid(row=2, column=1, padx=10, pady=5)
+# Crear títulos para los campos de entrada
+titulo_habitacion = tk.Label(marco_controles, text="Habitación", font=("Helvetica", 14, "bold"))
+titulo_habitacion.grid(row=0, column=0, columnspan=2, pady=(0,5))
 
-        self.label_mueble = tk.Label(self, text="Dimensiones del mueble:")
-        self.label_mueble.grid(row=3, column=0, columnspan=2, padx=10, pady=5, sticky=tk.W)
+titulo_largo_habitacion = tk.Label(marco_controles, text="Largo (m):")
+titulo_largo_habitacion.grid(row=1, column=0)
+entry_largo_habitacion = tk.Entry(marco_controles)
+entry_largo_habitacion.grid(row=1, column=1)
 
-        self.label_ancho_mueble = tk.Label(self, text="Ancho (metros):")
-        self.label_ancho_mueble.grid(row=4, column=0, padx=10, pady=5, sticky=tk.W)
-        self.entry_ancho_mueble = tk.Entry(self)
-        self.entry_ancho_mueble.grid(row=4, column=1, padx=10, pady=5)
+titulo_ancho_habitacion = tk.Label(marco_controles, text="Ancho (m):")
+titulo_ancho_habitacion.grid(row=2, column=0)
+entry_ancho_habitacion = tk.Entry(marco_controles)
+entry_ancho_habitacion.grid(row=2, column=1)
 
-        self.label_altura_mueble = tk.Label(self, text="Altura (metros):")
-        self.label_altura_mueble.grid(row=5, column=0, padx=10, pady=5, sticky=tk.W)
-        self.entry_altura_mueble = tk.Entry(self)
-        self.entry_altura_mueble.grid(row=5, column=1, padx=10, pady=5)
+titulo_objeto = tk.Label(marco_controles, text="Objeto", font=("Helvetica", 14, "bold"))
+titulo_objeto.grid(row=3, column=0, columnspan=2, pady=(10,5))
 
-        self.button_calcular = tk.Button(self, text="Calcular Área Limpiable", command=self.calcular_area_limpiable)
-        self.button_calcular.grid(row=6, column=0, columnspan=2, padx=10, pady=10)
+titulo_largo_objeto = tk.Label(marco_controles, text="Largo (m):")
+titulo_largo_objeto.grid(row=4, column=0)
+entry_largo_objeto = tk.Entry(marco_controles)
+entry_largo_objeto.grid(row=4, column=1)
 
-        self.label_resultado = tk.Label(self, text="")
-        self.label_resultado.grid(row=7, column=0, columnspan=2, padx=10, pady=5)
+titulo_ancho_objeto = tk.Label(marco_controles, text="Ancho (m):")
+titulo_ancho_objeto.grid(row=5, column=0)
+entry_ancho_objeto = tk.Entry(marco_controles)
+entry_ancho_objeto.grid(row=5, column=1)
 
-        # Canvas para dibujar la habitación y el mueble
-        self.canvas_dibujo = tk.Canvas(self, width=400, height=300, bg="white")
-        self.canvas_dibujo.grid(row=0, column=2, rowspan=8, padx=10, pady=10)
+titulo_posicion = tk.Label(marco_controles, text="Posición", font=("Helvetica", 14, "bold"))
+titulo_posicion.grid(row=6, column=0, columnspan=2, pady=(10,5))
 
-    def calcular_area_limpiable(self):
-        # Obtener dimensiones de la habitación y del mueble
-        longitud = float(self.entry_longitud.get())
-        ancho = float(self.entry_ancho.get())
-        ancho_mueble = float(self.entry_ancho_mueble.get())
-        altura_mueble = float(self.entry_altura_mueble.get())
+titulo_posicion_x = tk.Label(marco_controles, text="X (m):")
+titulo_posicion_x.grid(row=7, column=0)
+entry_posicion_x = tk.Entry(marco_controles)
+entry_posicion_x.grid(row=7, column=1)
 
-        # Calcular coordenadas para dibujar la habitación centrada
-        centro_x, centro_y = 200, 150
-        mitad_longitud, mitad_ancho = (longitud * 20) / 2, (ancho * 20) / 2
-        x1, y1 = centro_x - mitad_longitud, centro_y - mitad_ancho
-        x2, y2 = centro_x + mitad_longitud, centro_y + mitad_ancho
+titulo_posicion_y = tk.Label(marco_controles, text="Y (m):")
+titulo_posicion_y.grid(row=8, column=0)
+entry_posicion_y = tk.Entry(marco_controles)
+entry_posicion_y.grid(row=8, column=1)
 
-        # Dibujar la habitación con un fondo gris claro
-        self.canvas_dibujo.delete("habitacion")  # Limpiar dibujo anterior
-        self.canvas_dibujo.create_rectangle(x1, y1, x2, y2, outline="blue", fill="#D3D3D3", width=2, tags="habitacion")
+# Botón para calcular el área
+boton_calcular = tk.Button(marco_controles, text="Calcular Área", command=calcular_area)
+boton_calcular.grid(row=9, column=0, columnspan=2, pady=10)
 
-        # Calcular coordenadas para dibujar el mueble centrado dentro de la habitación
-        x1_mueble, y1_mueble = centro_x - (ancho_mueble * 10), centro_y - (altura_mueble * 10)
-        x2_mueble, y2_mueble = centro_x + (ancho_mueble * 10), centro_y + (altura_mueble * 10)
+# Crear marco para mostrar los resultados
+marco_resultados = tk.Frame(ventana)
+marco_resultados.grid(row=0, column=1, padx=10, pady=10)
 
-        # Dibujar el mueble con un fondo más oscuro
-        self.canvas_dibujo.create_rectangle(x1_mueble, y1_mueble, x2_mueble, y2_mueble, outline="red", fill="#A9A9A9", width=2, tags="mueble")
+# Etiquetas para mostrar los resultados
+resultado_area_habitacion = tk.Label(marco_resultados, text="")
+resultado_area_habitacion.grid(row=0, column=0, sticky="w", padx=5, pady=2)
 
-        # Calcular área limpiable
-        area_total = longitud * ancho
-        area_mueble = ancho_mueble * altura_mueble
-        area_limpiable = area_total - area_mueble
+resultado_area_objeto = tk.Label(marco_resultados, text="")
+resultado_area_objeto.grid(row=1, column=0, sticky="w", padx=5, pady=2)
 
-        # Mostrar el área limpiable
-        self.label_resultado.config(text=f"Área limpiable: {area_limpiable:.2f} metros cuadrados")
+resultado_area_limpiar = tk.Label(marco_resultados, text="")
+resultado_area_limpiar.grid(row=2, column=0, sticky="w", padx=5, pady=2)
 
+# Crear lienzo para visualizar habitación y objeto
+lienzo_frame = tk.Frame(ventana, bg="white", bd=2, relief="groove")
+lienzo_frame.grid(row=0, column=2, padx=10, pady=10)
 
-if __name__ == "__main__":
-    app = Interfaz()
-    app.mainloop()
+lienzo = tk.Canvas(lienzo_frame, width=400, height=300, bg="white")
+lienzo.pack()
+
+ventana.mainloop()
+
 
 
 

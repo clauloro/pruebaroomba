@@ -1,5 +1,8 @@
 import tkinter as tk
 
+# Velocidad de limpieza en metros cuadrados por minuto
+velocidad_limpieza = 1.5  # Supongamos que la aspiradora limpia 1.5 metros cuadrados por minuto
+
 def calcular_area():
     # Obtener las medidas de la habitación
     largo_habitacion = float(entry_largo_habitacion.get())
@@ -15,15 +18,23 @@ def calcular_area():
     
     # Calcular áreas
     area_habitacion = largo_habitacion * ancho_habitacion
-    area_objeto = largo_objeto * ancho_objeto
     
-    # Calcular área de limpieza de la aspiradora
-    area_limpiar = area_habitacion - area_objeto
+    # Verificar si el objeto está dentro de la habitación
+    if 0 <= posicion_x <= largo_habitacion and 0 <= posicion_y <= ancho_habitacion:
+        area_objeto = largo_objeto * ancho_objeto
+        area_limpiar = area_habitacion - area_objeto
+    else:
+        area_objeto = 0
+        area_limpiar = area_habitacion
     
     # Mostrar resultados
     resultado_area_habitacion.config(text=f"Área de la habitación: {area_habitacion} metros cuadrados")
     resultado_area_objeto.config(text=f"Área del objeto: {area_objeto} metros cuadrados")
     resultado_area_limpiar.config(text=f"Área para limpiar: {area_limpiar} metros cuadrados")
+    
+    # Calcular tiempo de limpieza
+    tiempo_limpieza = area_limpiar / velocidad_limpieza  # Tiempo en minutos
+    resultado_tiempo.config(text=f"Tiempo de limpieza: {tiempo_limpieza:.2f} minutos")
     
     # Dibujar habitación y objeto en el lienzo
     lienzo.delete("all")  # Limpiar el lienzo
@@ -40,14 +51,15 @@ def calcular_area():
     centro_y = lienzo_height / 2
     
     # Dibujar habitación
-    x1, y1 = centro_x - largo_habitacion * escala / 2, centro_y - ancho_habitacion * escala / 2
-    x2, y2 = x1 + largo_habitacion * escala, y1 + ancho_habitacion * escala
-    lienzo.create_rectangle(x1, y1, x2, y2, outline="black", fill="white")
+    x1_habitacion, y1_habitacion = centro_x - largo_habitacion * escala / 2, centro_y - ancho_habitacion * escala / 2
+    x2_habitacion, y2_habitacion = x1_habitacion + largo_habitacion * escala, y1_habitacion + ancho_habitacion * escala
+    lienzo.create_rectangle(x1_habitacion, y1_habitacion, x2_habitacion, y2_habitacion, outline="black", fill="white")
     
-    # Dibujar objeto
-    x1_objeto, y1_objeto = centro_x - largo_habitacion * escala / 2 + posicion_x * escala, centro_y - ancho_habitacion * escala / 2 + posicion_y * escala
-    x2_objeto, y2_objeto = x1_objeto + largo_objeto * escala, y1_objeto + ancho_objeto * escala
-    lienzo.create_rectangle(x1_objeto, y1_objeto, x2_objeto, y2_objeto, outline="red")
+    # Dibujar objeto si está dentro de la habitación
+    if area_objeto > 0:
+        x1_objeto, y1_objeto = centro_x - largo_habitacion * escala / 2 + (posicion_x - largo_objeto / 2) * escala, centro_y - ancho_habitacion * escala / 2 + (posicion_y - ancho_objeto / 2) * escala
+        x2_objeto, y2_objeto = x1_objeto + largo_objeto * escala, y1_objeto + ancho_objeto * escala
+        lienzo.create_rectangle(x1_objeto, y1_objeto, x2_objeto, y2_objeto, outline="red")
 
 # Crear ventana
 ventana = tk.Tk()
@@ -115,6 +127,9 @@ resultado_area_objeto.grid(row=1, column=0, sticky="w", padx=5, pady=2)
 resultado_area_limpiar = tk.Label(marco_resultados, text="")
 resultado_area_limpiar.grid(row=2, column=0, sticky="w", padx=5, pady=2)
 
+resultado_tiempo = tk.Label(marco_resultados, text="")
+resultado_tiempo.grid(row=3, column=0, sticky="w", padx=5, pady=2)
+
 # Crear lienzo para visualizar habitación y objeto
 lienzo_frame = tk.Frame(ventana, bg="white", bd=2, relief="groove")
 lienzo_frame.grid(row=0, column=2, padx=10, pady=10)
@@ -123,6 +138,9 @@ lienzo = tk.Canvas(lienzo_frame, width=400, height=300, bg="white")
 lienzo.pack()
 
 ventana.mainloop()
+
+
+
 
 
 
